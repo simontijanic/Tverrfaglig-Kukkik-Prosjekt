@@ -5,7 +5,7 @@ const BeiteArea = require("../Models/beiteAreaModel");
 
 exports.getIndex = (req, res) => {
   const messages = req.flash();
-  res.render("index", {messages});
+  res.render("index", { messages });
 };
 exports.getFAQ = (req, res) => {
   res.render("faq");
@@ -13,44 +13,45 @@ exports.getFAQ = (req, res) => {
 exports.getMap = async (req, res) => {
   try {
     const beiteAreas = await BeiteArea.find().populate("associatedFlocks");
-    res.render("map", { beiteAreas });  
-  }catch(err){
-    console.error(err)
+    res.render("map", { beiteAreas });
+  } catch (err) {
+    console.error(err);
   }
 };
 exports.getDatabaseInfo = (req, res) => {
   res.render("database-info");
 };
 
-exports.getFlokk = async (req, res)=> {
+exports.getFlokk = async (req, res) => {
   try {
     const messages = req.flash();
     const flokkId = req.params.id;
-    
-    const flokk = await Flokk.findById(flokkId).populate('beiteArea').exec();
+
+    const flokk = await Flokk.findById(flokkId).populate("beiteArea").exec();
 
     if (!flokk) {
-      req.flash('error', 'Flokk ikke funnet');
+      req.flash("error", "Flokk ikke funnet");
       return res.redirect("/");
     }
 
     const reinsdyr = await Reinsdyr.find({ flokk: flokkId }).exec();
 
-    const beiteAreaDetails = flokk.beiteArea ? await BeiteArea.findById(flokk.beiteArea).exec() : null;
+    const beiteAreaDetails = flokk.beiteArea
+      ? await BeiteArea.findById(flokk.beiteArea).exec()
+      : null;
 
-    res.render('flokk', {
+    res.render("flokk", {
       title: `Flokk: ${flokk.flokkName}`,
       flokk,
       reinsdyr,
       beiteArea: beiteAreaDetails,
-      messages
+      messages,
     });
-
-  }catch(err){
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).send("Serverfeil ved lasting av flokk");
   }
-}
+};
 
 exports.getSearch = async (req, res) => {
   try {

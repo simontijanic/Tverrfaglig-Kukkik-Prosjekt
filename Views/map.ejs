@@ -25,7 +25,8 @@
             <ul>
               <% area.associatedFlocks.forEach(flokk => { %>
                 <li>
-                  <strong><%= flokk.flokkName %></strong> - Serie: <%= flokk.series %> <br>
+                  <a href="/flokk/<%- flokk._id %>"><strong><%= flokk.flokkName %></strong></a>  
+                  - Serie: <%= flokk.series %> <br>
                   Buemerke: <%= flokk.buemerkeName %>
                 </li>
               <% }) %>
@@ -33,6 +34,8 @@
           <% } else { %>
             <p>Ingen flokker assosiert med dette beiteområdet.</p>
           <% } %>
+          
+          
         </div>
       </div>
     </div>

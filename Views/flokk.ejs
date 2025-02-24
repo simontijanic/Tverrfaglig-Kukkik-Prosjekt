@@ -1,8 +1,13 @@
 <%- include('components/header', { title: title }) %>
 
 <div class="container mt-4">
-  <h2 class="mb-3"><%= flokk?.flokkName || "Ukjent Flokk" %></h2>
-  
+  <h2 class="mb-3 d-flex align-items-center">
+    <% if (flokk?.buemerkeImage) { %>
+      <img src="<%= flokk.buemerkeImage %>" alt="Buemerke" class="mr-2 me-2 rounded-circle" style="height: 40px; width: 40px; object-fit: cover;">
+      <% } %>
+    <%= flokk?.flokkName || "Ukjent Flokk" %>
+  </h2>
+
   <div class="card mb-4">
     <div class="card-body">
       <p><strong>Series:</strong> <%= flokk?.series || "Ikke tilgjengelig" %></p>
