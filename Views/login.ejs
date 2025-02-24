@@ -1,0 +1,19 @@
+<%- include('components/header', { title: 'Logg inn' }) %>
+
+<h2>Logg inn</h2>
+<a href="/register">Har du ikke en konto?</a>
+<form action="/login" method="POST">
+  <div class="form-group">
+    <label for="email">E-post</label>
+    <input type="email" class="form-control" id="email" name="email" placeholder="Din e-post" required>
+  </div>
+  <div class="form-group">
+    <label for="password">Passord</label>
+    <input type="password" class="form-control" id="password" name="password" placeholder="Ditt passord" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Logg inn</button>
+</form>
+
+<%- include('components/flash') %>
+
+<%- include('components/footer') %>

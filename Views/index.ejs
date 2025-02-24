@@ -1,0 +1,78 @@
+<%- include('components/header', { title: 'Hjem' }) %>
+
+<div class="jumbotron text-center">
+  <h1>Velkommen til Kukkik Ano Reinsdyrregister</h1>
+  <p>Søk etter reinsdyr, eiere, flokk eller beiteområde</p>
+  <form id="searchForm" class="form-inline justify-content-center">
+    <input class="form-control mr-2" type="text" id="searchInput" placeholder="Søk på flokk, reinsdyr, beiteområder...">
+    <button class="btn btn-primary" type="submit">Søk</button>
+  </form>  
+</div>
+
+<%- include('components/flash') %>
+
+<div id="resultsContainer"></div>
+
+<script>
+  document.getElementById('searchForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const searchQuery = document.getElementById('searchInput').value;
+
+    if (!searchQuery) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/search?q=${encodeURIComponent(searchQuery)}`);
+      const data = await response.json();
+
+      if (data.message) {
+        document.getElementById('resultsContainer').innerHTML = `<p>${data.message}</p>`;
+        return;
+      }
+
+      const resultsContainer = document.getElementById('resultsContainer');
+      resultsContainer.innerHTML = '';
+
+      if (data.results.flokk.length > 0) {
+        resultsContainer.innerHTML += '<h4>Flokker:</h4><ul>';
+        data.results.flokk.forEach(flokk => {
+          resultsContainer.innerHTML += `
+            <li>
+              <a href="/flokk/${flokk._id}">${flokk.flokkName} - ${flokk.buemerkeName}</a>
+            </li>
+          `;
+        });
+        resultsContainer.innerHTML += '</ul>';
+      }
+
+
+      if (data.results.reindeer.length > 0) {
+        resultsContainer.innerHTML += '<h4>Reinsdyr:</h4><ul>';
+        data.results.reindeer.forEach(reindeer => {
+          resultsContainer.innerHTML += `<li>${reindeer.name} - ${reindeer.serialNumber}</li>`;
+        });
+        resultsContainer.innerHTML += '</ul>';
+      }
+
+      if (data.results.beiteArea.length > 0) {
+        resultsContainer.innerHTML += '<h4>Beiteområder:</h4><ul>';
+        data.results.beiteArea.forEach(area => {
+          resultsContainer.innerHTML += `<li>${area.primaryArea} - ${area.counties.join(', ')}</li>`;
+        });
+        resultsContainer.innerHTML += '</ul>';
+      }
+
+      if (!data.results.flokk.length && !data.results.reindeer.length && !data.results.beiteArea.length) {
+        resultsContainer.innerHTML = '<p>Ingen resultater funnet.</p>';
+      }
+
+    } catch (error) {
+      console.error(error);
+    }
+  });
+</script>
+
+
+<%- include('components/footer') %>

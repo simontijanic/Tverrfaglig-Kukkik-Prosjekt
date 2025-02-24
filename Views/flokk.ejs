@@ -1,0 +1,42 @@
+<%- include('components/header', { title: title }) %>
+
+<div class="container mt-4">
+  <h2 class="mb-3"><%= flokk?.flokkName || "Ukjent Flokk" %></h2>
+  
+  <div class="card mb-4">
+    <div class="card-body">
+      <p><strong>Series:</strong> <%= flokk?.series || "Ikke tilgjengelig" %></p>
+      <p><strong>Buemerke:</strong> <%= flokk?.buemerkeName || "Ikke tilgjengelig" %></p>
+    </div>
+  </div>
+
+  <% if (beiteArea) { %>
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5>Beiteområde</h5>
+      </div>
+      <div class="card-body">
+        <p><strong>Navn:</strong> <%= beiteArea.primaryArea || "Ikke oppgitt" %></p>
+        <p><strong>Sted:</strong> <%= beiteArea.counties || "Ikke oppgitt" %></p>
+      </div>
+    </div>
+  <% } else { %>
+    <div class="alert alert-warning">Ingen beiteområde assosiert med denne flokken.</div>
+  <% } %>
+
+  <h3 class="mb-3">Reinsdyr i flokken:</h3>
+  <% if (reinsdyr.length > 0) { %>
+    <ul class="list-group mb-4">
+      <% reinsdyr.forEach(function(rein) { %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <strong><%= rein.name %></strong> 
+          <span class="badge badge-secondary">Serienummer: <%= rein.serialNumber %></span>
+        </li>
+      <% }) %>
+    </ul>
+  <% } else { %>
+    <div class="alert alert-info">Ingen reinsdyr i denne flokken.</div>
+  <% } %>
+</div>
+
+<%- include('components/footer') %>

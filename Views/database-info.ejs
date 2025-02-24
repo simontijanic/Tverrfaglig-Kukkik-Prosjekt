@@ -1,0 +1,21 @@
+<%- include('components/header', { title: 'Database Informasjon' }) %>
+
+<h2>Databaseoversikt</h2>
+<p>Denne databasen består av følgende tabeller:</p>
+<ul>
+  <li><strong>Eier:</strong> Navn, unikt nummer (uuid), e-post, passord, kontaktspråk, telefonnummer</li>
+  <li><strong>Flokk:</strong> Eier, flokk navn, serieinndeling, buemerke (navn & bilde)</li>
+  <li><strong>Individuelt reinsdyr:</strong> Serienummer, navn, flokk, fødselsdato</li>
+  <li><strong>Beiteområde:</strong> Det primære beiteområdet, fylke/fylkene området tilhører</li>
+</ul>
+
+<h3>ER-diagram</h3>
+<div style="text-align: center;">
+  <!-- Erstatt med riktig bilde eller integrert diagram -->
+  <img src="/images/er-diagram.png" alt="ER-diagram" class="img-fluid">
+</div>
+
+<h3>Prosjektskissering</h3>
+<p>Se våre detaljerte prosjektskisser her: <a href="https://github.com/users/simontijanic/projects/9/views/1" target="_blank">GitHub Projects</a>.</p>
+
+<%- include('components/footer') %>

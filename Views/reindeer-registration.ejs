@@ -1,0 +1,33 @@
+<%- include('components/header', { title: 'Registrer Reinsdyr' }) %>
+
+<h2>Registrer nytt reinsdyr</h2>
+<p>Kun tilgjengelig for autoriserte brukere. Du kan kun registrere reinsdyr du selv eier.</p>
+<a href="/flokk/create">Har du ikke oprettet en flokk?</a>
+
+<form action="/reindeer-registration" method="POST">
+  <div class="form-group">
+    <label for="serialNumber">Serienummer:</label>
+    <input type="text" class="form-control" id="serialNumber" name="serialNumber" required>
+  </div>
+  <div class="form-group">
+    <label for="name">Navn:</label>
+    <input type="text" class="form-control" id="name" name="name" required>
+  </div>
+  <div class="form-group">
+    <label for="flokk">Velg Flokk:</label>
+    <select class="form-control" id="flokk" name="flokk" required>
+      <% flokker.forEach(flokk => { %>
+        <option value="<%= flokk._id %>"><%= flokk.flokkName %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="birthDate">Fødselsdato:</label>
+    <input type="date" class="form-control" id="birthDate" name="birthDate" required>
+  </div>
+  <button type="submit" class="btn btn-primary">Registrer Reinsdyr</button>
+</form>
+
+<%- include('components/flash') %>
+
+<%- include('components/footer') %>

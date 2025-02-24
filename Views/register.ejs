@@ -1,0 +1,39 @@
+<%- include('components/header', { title: 'Registrer deg' }) %>
+
+<h2>Registrer ny bruker</h2>
+<a href="/login">Allerede en konto?</a>
+<form action="/register" method="POST">
+  <div class="form-group">
+    <label for="name">Navn</label>
+    <input type="text" class="form-control" id="name" name="name" placeholder="Ditt navn" required>
+  </div>
+  <div class="form-group">
+    <label for="email">E-post</label>
+    <input type="email" class="form-control" id="email" name="email" placeholder="Din e-post" required>
+  </div>
+  <div class="form-group">
+    <label for="password">Passord</label>
+    <input type="password" class="form-control" id="password" name="password" placeholder="Ditt passord" required>
+  </div>
+  <div class="form-group">
+    <label for="contactLanguage">Kontaktspråk</label>
+    <select class="form-control" id="contactLanguage" name="contactLanguage" required>
+      <option value="">Velg språk</option>
+      <option value="nordsamisk">Nordsamisk</option>
+      <option value="lulesamisk">Lulesamisk</option>
+      <option value="sørsamisk">Sørsamisk</option>
+      <option value="norsk">Norsk</option>
+      <option value="engelsk">Engelsk</option>
+
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="phone">Telefonnummer</label>
+    <input type="tel" class="form-control" id="phone" name="phone" pattern="(\+47[\s-]?)?[2-9][0-9]{2}[\s-]?[0-9]{2}[\s-]?[0-9]{2}" placeholder="Ditt telefonnummer" required>
+  </div>
+  <button type="submit" class="btn btn-success">Registrer</button>
+</form>
+
+<%- include('components/flash') %>
+
+<%- include('components/footer') %>

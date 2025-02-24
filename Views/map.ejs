@@ -1,0 +1,42 @@
+<%- include('components/header', { title: 'Beiteområder' }) %>
+
+<h2>Beiteområder</h2>
+<p>Her vises kartet med de forskjellige områdene:</p>
+<div class="map-container m-4" style="text-align: center;">
+  <img src="/images/GrazingAreas.png" alt="Kart over beiteområder" class="img-fluid">
+</div>
+
+<h3>Liste over Beiteområder</h3>
+<div class="accordion" id="accordionBeiteAreas">
+  <% beiteAreas.forEach((area, index) => { %>
+    <div class="card">
+      <div class="card-header" id="heading<%= area._id %>">
+        <h2 class="mb-0">
+          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse<%= area._id %>" aria-expanded="true" aria-controls="collapse<%= area._id %>">
+            <%= area.primaryArea %> (<%= area.counties.join(', ') %>)
+          </button>
+        </h2>
+      </div>
+
+      <div id="collapse<%= area._id %>" class="collapse" aria-labelledby="heading<%= area._id %>" data-parent="#accordionBeiteAreas">
+        <div class="card-body">
+          <h5>Flokker i dette området:</h5>
+          <% if (area.associatedFlocks.length > 0) { %>
+            <ul>
+              <% area.associatedFlocks.forEach(flokk => { %>
+                <li>
+                  <strong><%= flokk.flokkName %></strong> - Serie: <%= flokk.series %> <br>
+                  Buemerke: <%= flokk.buemerkeName %>
+                </li>
+              <% }) %>
+            </ul>
+          <% } else { %>
+            <p>Ingen flokker assosiert med dette beiteområdet.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
+<%- include('components/footer') %>
