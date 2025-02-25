@@ -4,7 +4,6 @@ const Reinsdyr = require("../Models/reinsdyrModel");
 const BeiteArea = require("../Models/beiteAreaModel");
 
 const bcrypt = require("bcryptjs");
-
 const serialUtil = require("../Utils/serial");
 
 exports.getLogin = (req, res) => {
