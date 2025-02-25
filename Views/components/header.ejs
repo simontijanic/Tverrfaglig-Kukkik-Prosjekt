@@ -20,6 +20,11 @@
             <li class="nav-item mr-4"><a class="nav-link" href="/login">Logg inn</a></li>
         <% } else { %>
             <li class="nav-item mr-4"><a class="nav-link" href="/reindeer-registration">Registrer reinsdyr</a></li>
+            <li class="nav-item mr-4">
+              <form action="/logout" method="POST" style="display: inline;">
+                <button class="btn btn-link nav-link" type="submit">Logg ut</button>
+              </form>
+            </li>  
         <% } %>
         <li class="nav-item mr-4"><a class="nav-link" href="/faq">FAQ</a></li>
         <li class="nav-item mr-4"><a class="nav-link" href="/map">Kart</a></li>

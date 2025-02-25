@@ -17,6 +17,8 @@ router.get("/register", registrationController.getRegister)
 router.post("/login", registrationController.postLogin)
 router.post("/register", registrationController.postRegister)
 
+router.post("/logout", registrationController.postLogout)
+
 router.get("/reindeer-registration", authUser.isAuthenticated, registrationController.getReinsdyrRegister)
 router.post("/reindeer-registration", authUser.isAuthenticated, registrationController.postReinsdyrRegister)
 

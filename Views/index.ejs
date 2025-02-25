@@ -51,7 +51,10 @@
       if (data.results.reindeer.length > 0) {
         resultsContainer.innerHTML += '<h4>Reinsdyr:</h4><ul>';
         data.results.reindeer.forEach(reindeer => {
-          resultsContainer.innerHTML += `<li>${reindeer.name} - ${reindeer.serialNumber}</li>`;
+          resultsContainer.innerHTML += `
+          <li>
+            ${reindeer.name} - <a href="/flokk/${reindeer.flokk._id}">${reindeer.serialNumber}</a>
+          </li>`;
         });
         resultsContainer.innerHTML += '</ul>';
       }

@@ -5,6 +5,8 @@ const BeiteArea = require("../Models/beiteAreaModel");
 
 const bcrypt = require("bcryptjs");
 
+const serialUtil = require("../Utils/serial")
+
 exports.getLogin = (req, res) => {
   const messages = req.flash();
   res.render("login", {messages});
@@ -38,6 +40,7 @@ exports.postLogin = async (req, res) => {
       id: user._id,
       email: user.email,
       name: user.name,
+      uuid: user.uuid
     };
 
     req.flash('success', 'Du har logget inn!');
@@ -85,6 +88,19 @@ exports.postRegister = async (req, res) => {
   }
 };
 
+exports.postLogout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+      req.flash("error", "Feil under utlogging. Vennligst prøv igjen.");
+      return res.redirect("/");
+    }
+
+    res.clearCookie('connect.sid');
+    res.redirect("/login");
+  });
+}
+
 exports.getReinsdyrRegister = async (req, res) => {
   try {
     const userId = req.session.user.id;
@@ -103,9 +119,9 @@ exports.getReinsdyrRegister = async (req, res) => {
 };
 exports.postReinsdyrRegister = async (req, res) => {
   try {
-    const { serialNumber, name, flokk, birthDate } = req.body;
+    const {  name, flokk, birthDate } = req.body;
 
-    if (!serialNumber || !name || !flokk || !birthDate) {
+    if ( !name || !flokk || !birthDate) {
       req.flash('error', 'Fyll inn alle feltene');
       return res.redirect("reindeer-registration");
     }
@@ -116,6 +132,9 @@ exports.postReinsdyrRegister = async (req, res) => {
       req.flash('error', 'Fant ikke flokk');
       return res.redirect("reindeer-registration");
     }
+
+    const currentReindeerCount = await Reinsdyr.countDocuments({ flokk: userFlokk._id });
+    const serialNumber = serialUtil.generateReindeerSerial(userFlokk.series, currentReindeerCount);
 
     const newReindeer = new Reinsdyr({
       serialNumber,
@@ -147,12 +166,11 @@ exports.getFlokk = async (req, res) => {
 
 exports.postFlokkRegister = async (req, res) => {
   try {
-    const { flokkName, series, buemerkeName, buemerkeImage, beiteArea } =
+    const { flokkName, buemerkeName, buemerkeImage, beiteArea } =
       req.body;
 
     if (
       !flokkName ||
-      !series ||
       !buemerkeName ||
       !buemerkeImage ||
       !beiteArea
@@ -162,10 +180,20 @@ exports.postFlokkRegister = async (req, res) => {
     }
     const userId = req.session.user.id;
 
+    const user = await User.findById(userId);
+    if (!user) {
+      req.flash('error', 'Fant ikke brukerdata');
+      return res.redirect("/flokk/create");
+    }
+
+    const ownerCode = user.uuid.substring(0, 4).toUpperCase();
+    const currentHerdCount = await Flokk.countDocuments({ owner: userId });
+    const herdSeries = serialUtil.generateHerdSeries(ownerCode, currentHerdCount);
+
     const newFlokk = new Flokk({
       owner: userId,
       flokkName,
-      series,
+      series: herdSeries,
       buemerkeName,
       buemerkeImage,
       beiteArea,

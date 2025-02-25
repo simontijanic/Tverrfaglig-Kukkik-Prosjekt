@@ -67,7 +67,7 @@ exports.getSearch = async (req, res) => {
 
     const reindeerResults = await Reinsdyr.find({
       $text: { $search: searchQuery },
-    });
+    }).populate("flokk");
 
     const beiteAreaResults = await BeiteArea.find({
       $text: { $search: searchQuery },
