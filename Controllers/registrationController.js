@@ -206,14 +206,14 @@ exports.postFlokkRegister = async (req, res) => {
     const { flokkName, buemerkeName, buemerkeImage, beiteArea } = req.body;
 
     if (!flokkName || !buemerkeName || !buemerkeImage || !beiteArea) {
-      req.flash("error", "Fyll inn alle feltene");
+     // req.flash("error", "Fyll inn alle feltene");
       return res.redirect("/flokk/create");
     }
     const userId = req.session.user.id;
 
     const user = await User.findById(userId);
     if (!user) {
-      req.flash("error", "Fant ikke brukerdata");
+    //  req.flash("error", "Fant ikke brukerdata");
       return res.redirect("/flokk/create");
     }
 
@@ -241,8 +241,7 @@ exports.postFlokkRegister = async (req, res) => {
       });
     }
 
-    req.flash("success", "Du har registrert en ny flokk!");
-
+    //req.flash("success", "Du har registrert en ny flokk!");
     return res.redirect("/reindeer-registration");
   } catch (error) {
     console.error(error);
