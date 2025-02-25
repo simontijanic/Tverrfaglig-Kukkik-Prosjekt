@@ -185,7 +185,7 @@ exports.postDeleteReinsdyr = async (req, res) => {
 exports.getFlokk = async (req, res) => {
   try {
     const messages = req.flash();
-    const beiteAreas = await BeiteArea.find();
+    const beiteAreas = await BeiteArea.find() || [];
     
     return res.render("create-flokk", {
       title: "Opprett Flokk",
