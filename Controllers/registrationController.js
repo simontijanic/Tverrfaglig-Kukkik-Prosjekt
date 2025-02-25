@@ -183,21 +183,23 @@ exports.postDeleteReinsdyr = async (req, res) => {
 
 
 exports.getFlokk = async (req, res) => {
+  const messages = req.flash();
+  let beiteAreas = [];
+
   try {
-    const messages = req.flash();
-    const beiteAreas = await BeiteArea.find() || [];
-    
-    return res.render("create-flokk", {
-      title: "Opprett Flokk",
-      messages,
-      beiteAreas,
-    });  
-  }catch(err){
-    console.log(err)
-    req.flash('error', 'Feil for å registrere flokk');
-    return res.redirect("/reindeer-registration");
-}
+    beiteAreas = await BeiteArea.find();
+  } catch (err) {
+    console.error("Error fetching BeiteAreas (returning empty array):", err);
+  }
+  
+  return res.render("create-flokk", {
+    title: "Opprett Flokk",
+    messages,
+    beiteAreas,
+  });
 };
+
+
 exports.postFlokkRegister = async (req, res) => {
   try {
     const { flokkName, buemerkeName, buemerkeImage, beiteArea } =
