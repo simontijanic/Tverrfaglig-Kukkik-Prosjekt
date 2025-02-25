@@ -79,7 +79,7 @@ exports.postRegister = async (req, res) => {
 
     await newUser.save();
 
-    req.flash('success', 'Du har logget inn!');
+    req.flash('success', 'Du har registret deg inn! Vennligst logg inn.');
 
     return res.redirect("/login");
   } catch (err) {
@@ -183,14 +183,19 @@ exports.postDeleteReinsdyr = async (req, res) => {
 
 
 exports.getFlokk = async (req, res) => {
-  const messages = req.flash();
-  const beiteAreas = await BeiteArea.find();
-  
-  res.render("create-flokk", {
-    title: "Opprett Flokk",
-    messages,
-    beiteAreas,
-  });
+  try {
+    const messages = req.flash();
+    const beiteAreas = await BeiteArea.find();
+    
+    res.render("create-flokk", {
+      title: "Opprett Flokk",
+      messages,
+      beiteAreas,
+    });  
+  }catch(err){
+    req.flash('error', 'Feil for å registrere flokk');
+    return res.redirect("/reindeer-registration");
+}
 };
 exports.postFlokkRegister = async (req, res) => {
   try {

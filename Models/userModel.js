@@ -10,7 +10,11 @@ const userSchema = mongoose.Schema({
       enum: ['nordsamisk', 'lulesamisk', 'sørsamisk', "norsk", "engelsk"], 
       required: true 
     },
-    phone: { type: String, required: true }  
+    phone: { 
+      type: String, 
+      required: true, 
+      validate: [/^(\+47)[\s]?\d{8}$/, 'Ugyldig telefonnummer.']
+    }  
 }, { timestamps: true })
 
 module.exports = mongoose.model("User", userSchema)
