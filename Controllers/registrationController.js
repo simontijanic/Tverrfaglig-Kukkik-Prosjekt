@@ -150,7 +150,7 @@ exports.postReinsdyrRegister = async (req, res) => {
     return res.redirect("/");
   } catch (error) {
     console.error(error);
-    res.status(500).send("Serverfeil under registrering av reinsdyr.");
+    return res.status(500).send("Serverfeil under registrering av reinsdyr.");
   }
 };
 exports.postDeleteReinsdyr = async (req, res) => {
@@ -173,11 +173,11 @@ exports.postDeleteReinsdyr = async (req, res) => {
     await Reinsdyr.findByIdAndDelete(reindeerId);
 
     req.flash("success", "Reinsdyret ble slettet!");
-    res.redirect("/reindeer-registration");
+    return res.redirect("/reindeer-registration");
   } catch (error) {
     console.error(error);
     req.flash("error", "Noe gikk galt under sletting.");
-    res.redirect("/reindeer-registration");
+    return res.redirect("/reindeer-registration");
   }
 };
 
@@ -187,12 +187,13 @@ exports.getFlokk = async (req, res) => {
     const messages = req.flash();
     const beiteAreas = await BeiteArea.find();
     
-    res.render("create-flokk", {
+    return res.render("create-flokk", {
       title: "Opprett Flokk",
       messages,
       beiteAreas,
     });  
   }catch(err){
+    console.log(err)
     req.flash('error', 'Feil for å registrere flokk');
     return res.redirect("/reindeer-registration");
 }
@@ -245,6 +246,6 @@ exports.postFlokkRegister = async (req, res) => {
     return res.redirect("/reindeer-registration");
   } catch (error) {
     console.error(error);
-    res.status(500).send("Feil ved opprettelse av flokk.");
+    return res.status(500).send("Feil ved opprettelse av flokk.");
   }
 };
