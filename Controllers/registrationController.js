@@ -184,30 +184,27 @@ exports.postDeleteReinsdyr = async (req, res) => {
 
 exports.getFlokk = async (req, res) => {
   const messages = req.flash();
+  console.log("Messages:", messages); // Log the messages
+  
   let beiteAreas = [];
-  
 
   try {
+    console.log("Attempting to fetch BeiteAreas...");
     beiteAreas = await BeiteArea.find();
+    console.log("Fetched BeiteAreas:", beiteAreas);
   } catch (err) {
-    console.error("Error fetching BeiteAreas (returning empty array):", err);
+    console.error("Error fetching BeiteAreas:", err);
+    return res.status(500).send("Error fetching BeiteAreas");
   }
   
-  try {
-
-    console.log("Messages:", messages);
-    console.log("BeiteAreas:", beiteAreas);
-
-    return res.render("create-flokk", {
-      title: "Opprett Flokk",
-      messages,
-      beiteAreas,
-    });
-  } catch (renderErr) {
-    console.error("Error rendering create-flokk view:", renderErr);
-    return res.status(500).send("Server error while rendering page");
-  }
+  console.log("Rendering page...");
+  return res.render("create-flokk", {
+    title: "Opprett Flokk",
+    messages,
+    beiteAreas,
+  });
 };
+
 
 
 
