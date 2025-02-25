@@ -23,7 +23,7 @@ router.get("/reindeer-registration", authUser.isAuthenticated, registrationContr
 router.post("/reindeer-registration", authUser.isAuthenticated, registrationController.postReinsdyrRegister)
 router.post("/reindeer/delete/:id", authUser.isAuthenticated, registrationController.postDeleteReinsdyr)
 
-router.get("/flokk/create", authUser.isAuthenticated, registrationController.getFlokk)
+router.get("/flokk/create", authUser.isAuthenticated, registrationController.getFlokkCreation)
 router.post("/flokk/create", authUser.isAuthenticated, registrationController.postFlokkRegister)
 
 router.get('/search', userController.getSearch);

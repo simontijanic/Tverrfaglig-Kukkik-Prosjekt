@@ -17,16 +17,16 @@
     <div class="form-group">
         <label for="beiteArea">Velg Beiteområde:</label>
         <select class="form-control" id="beiteArea" name="beiteArea">
-          <% beiteAreas.forEach(area => { %>
-            <option value="<%= area._id %>"><%= area.primaryArea %> (<%= area.counties.join(', ') %>)</option>
-          <% }) %>
+          <% if (beiteAreas) { %>
+            <% beiteAreas.forEach(area => { %>
+              <option value="<%= area._id %>"><%= area.primaryArea %> (<%= area.counties.join(', ') %>)</option>
+            <% }) %>
+          <% } %>
         </select>
       </div>
       
     
     <button type="submit" class="btn btn-primary">Opprett flokk</button>
   </form>
-  
-  <%- include('components/flash') %>
 
 <%- include('components/footer') %>
