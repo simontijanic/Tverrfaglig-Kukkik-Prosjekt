@@ -183,30 +183,19 @@ exports.postDeleteReinsdyr = async (req, res) => {
 
 
 exports.getFlokk = async (req, res) => {
-  const messages = req.flash();
-  console.log("Messages:", messages); // Log the messages
+  console.log("Starting /flokk/create route...");
   
-  let beiteAreas = [];
-
   try {
-    console.log("Attempting to fetch BeiteAreas...");
-    beiteAreas = await BeiteArea.find();
-    console.log("Fetched BeiteAreas:", beiteAreas);
+    return res.render("create-flokk", {
+      title: "Opprett Flokk",
+      messages: req.flash(),
+      beiteAreas: [],
+    });
   } catch (err) {
-    console.error("Error fetching BeiteAreas:", err);
-    return res.status(500).send("Error fetching BeiteAreas");
+    console.error("Error in /flokk/create route:", err);
+    return res.status(500).send("Server error");
   }
-  
-  console.log("Rendering page...");
-  return res.render("create-flokk", {
-    title: "Opprett Flokk",
-    messages,
-    beiteAreas,
-  });
 };
-
-
-
 
 exports.postFlokkRegister = async (req, res) => {
   try {
