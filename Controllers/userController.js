@@ -27,7 +27,7 @@ exports.getFlokk = async (req, res) => {
     const messages = req.flash();
     const flokkId = req.params.id;
 
-    const flokk = await Flokk.findById(flokkId).populate("beiteArea").exec();
+    const flokk = await Flokk.findById(flokkId).populate("beiteArea").populate("owner").exec();
 
     if (!flokk) {
       req.flash("error", "Flokk ikke funnet");
@@ -61,16 +61,27 @@ exports.getSearch = async (req, res) => {
       return res.json({ message: "Søkestreng er nødvendig", results: [] });
     }
 
+    const regexQuery = new RegExp(searchQuery, 'i');
+
     const flokkResults = await Flokk.find({
-      $text: { $search: searchQuery },
+      $or: [
+        { flokkName: { $regex: regexQuery } },
+        { buemerkeName: { $regex: regexQuery } }
+      ]
     });
 
     const reindeerResults = await Reinsdyr.find({
-      $text: { $search: searchQuery },
+      $or: [
+        { name: { $regex: regexQuery } },
+        { serialNumber: { $regex: regexQuery } }
+      ]
     }).populate("flokk");
 
     const beiteAreaResults = await BeiteArea.find({
-      $text: { $search: searchQuery },
+      $or: [
+        { primaryArea: { $regex: regexQuery } },
+        { counties: { $in: [regexQuery] } }
+      ]
     });
 
     res.json({
@@ -85,3 +96,5 @@ exports.getSearch = async (req, res) => {
     res.status(500).json({ message: "Feil ved søk." });
   }
 };
+
+

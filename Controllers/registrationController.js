@@ -153,17 +153,45 @@ exports.postReinsdyrRegister = async (req, res) => {
     res.status(500).send("Serverfeil under registrering av reinsdyr.");
   }
 };
+exports.postDeleteReinsdyr = async (req, res) => {
+  try {
+    const reindeerId = req.params.id;
+    const userId = req.session.user.id; 
+
+    const reindeer = await Reinsdyr.findById(reindeerId).populate("flokk");
+
+    if (!reindeer) {
+      req.flash("error", "Reinsdyret ble ikke funnet.");
+      return res.redirect("/reindeer-registration");
+    }
+
+    if (String(reindeer.flokk.owner) !== String(userId)) {
+      req.flash("error", "Du har ikke tillatelse til å slette dette reinsdyret.");
+      return res.redirect("/reindeer-registration");
+    }
+
+    await Reinsdyr.findByIdAndDelete(reindeerId);
+
+    req.flash("success", "Reinsdyret ble slettet!");
+    res.redirect("/reindeer-registration");
+  } catch (error) {
+    console.error(error);
+    req.flash("error", "Noe gikk galt under sletting.");
+    res.redirect("/reindeer-registration");
+  }
+};
+
 
 exports.getFlokk = async (req, res) => {
   const messages = req.flash();
   const beiteAreas = await BeiteArea.find();
+  
   res.render("create-flokk", {
     title: "Opprett Flokk",
     messages,
     beiteAreas,
   });
 };
-
 exports.postFlokkRegister = async (req, res) => {
   try {
     const { flokkName, buemerkeName, buemerkeImage, beiteArea } =

@@ -15,20 +15,21 @@
     <a class="navbar-brand" href="/"><strong>Kuk</strong>kik Ano</a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ml-auto">
-        <li class="nav-item mr-4"><a class="nav-link" href="/">Hjem</a></li> <!-- Added margin-right to add space -->
-        <% if (!user) { %>
-            <li class="nav-item mr-4"><a class="nav-link" href="/login">Logg inn</a></li>
-        <% } else { %>
-            <li class="nav-item mr-4"><a class="nav-link" href="/reindeer-registration">Registrer reinsdyr</a></li>
-            <li class="nav-item mr-4">
-              <form action="/logout" method="POST" style="display: inline;">
-                <button class="btn btn-link nav-link" type="submit">Logg ut</button>
-              </form>
-            </li>  
-        <% } %>
+        <li class="nav-item mr-4"><a class="nav-link" href="/">Hjem</a></li> 
         <li class="nav-item mr-4"><a class="nav-link" href="/faq">FAQ</a></li>
         <li class="nav-item mr-4"><a class="nav-link" href="/map">Kart</a></li>
         <li class="nav-item mr-4"><a class="nav-link" href="/database-info">Databaseinfo</a></li>
+        <% if (!user) { %>
+          <li class="nav-item mr-4"><a class="btn btn-outline-primary" href="/login">Logg inn</a></li>
+      <% } else { %>
+          <li class="nav-item mr-4"><a class="btn btn-outline-primary" href="/reindeer-registration">Registrer reinsdyr</a></li>
+          <li class="nav-item mr-4">
+            <form action="/logout" method="POST" style="display: inline;">
+              <button class="btn btn-outline-danger" type="submit">Logg ut</button>
+            </form>
+          </li>  
+      <% } %>
+
       </ul>
     </div>
   </nav>

@@ -1,9 +1,9 @@
 <%- include('components/header', { title: 'Hjem' }) %>
 
-<div class="jumbotron text-center">
+<div class="jumbotron text-center mb-4">
   <h1>Velkommen til Kukkik Ano Reinsdyrregister</h1>
   <p>Søk etter reinsdyr, eiere, flokk eller beiteområde</p>
-  <form id="searchForm" class="form-inline justify-content-center">
+  <form id="searchForm" class="form-inline justify-content-center mb-4">
     <input class="form-control mr-2" type="text" id="searchInput" placeholder="Søk på flokk, reinsdyr, beiteområder...">
     <button class="btn btn-primary" type="submit">Søk</button>
   </form>  
@@ -11,7 +11,9 @@
 
 <%- include('components/flash') %>
 
-<div id="resultsContainer"></div>
+<div id="resultsContainer" class="mt-4">
+  <!-- Results will be dynamically added here -->
+</div>
 
 <script>
   document.getElementById('searchForm').addEventListener('submit', async (e) => {
@@ -36,7 +38,8 @@
       resultsContainer.innerHTML = '';
 
       if (data.results.flokk.length > 0) {
-        resultsContainer.innerHTML += '<h4>Flokker:</h4><ul>';
+        resultsContainer.innerHTML += '<h4 class="mt-4">Flokker:</h4>';
+        resultsContainer.innerHTML += '<ul class="mb-4">'; 
         data.results.flokk.forEach(flokk => {
           resultsContainer.innerHTML += `
             <li>
@@ -47,9 +50,9 @@
         resultsContainer.innerHTML += '</ul>';
       }
 
-
       if (data.results.reindeer.length > 0) {
-        resultsContainer.innerHTML += '<h4>Reinsdyr:</h4><ul>';
+        resultsContainer.innerHTML += '<h4 class="mt-4">Reinsdyr:</h4>'; 
+        resultsContainer.innerHTML += '<ul class="mb-4">';
         data.results.reindeer.forEach(reindeer => {
           resultsContainer.innerHTML += `
           <li>
@@ -60,7 +63,8 @@
       }
 
       if (data.results.beiteArea.length > 0) {
-        resultsContainer.innerHTML += '<h4>Beiteområder:</h4><ul>';
+        resultsContainer.innerHTML += '<h4 class="mt-4">Beiteområder:</h4>';
+        resultsContainer.innerHTML += '<ul class="mb-4">';
         data.results.beiteArea.forEach(area => {
           resultsContainer.innerHTML += `<li>${area.primaryArea} - ${area.counties.join(', ')}</li>`;
         });
@@ -76,6 +80,5 @@
     }
   });
 </script>
-
 
 <%- include('components/footer') %>

@@ -14,13 +14,14 @@ router.get("/database-info", userController.getDatabaseInfo)
 router.get("/login", registrationController.getLogin)
 router.get("/register", registrationController.getRegister)
 
-router.post("/login", registrationController.postLogin)
+router.post("/login", registrationController.postLogin) 
 router.post("/register", registrationController.postRegister)
 
 router.post("/logout", registrationController.postLogout)
 
 router.get("/reindeer-registration", authUser.isAuthenticated, registrationController.getReinsdyrRegister)
 router.post("/reindeer-registration", authUser.isAuthenticated, registrationController.postReinsdyrRegister)
+router.post("/reindeer/delete/:id", authUser.isAuthenticated, registrationController.postDeleteReinsdyr)
 
 router.get("/flokk/create", authUser.isAuthenticated, registrationController.getFlokk)
 router.post("/flokk/create", authUser.isAuthenticated, registrationController.postFlokkRegister)
