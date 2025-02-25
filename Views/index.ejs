@@ -1,18 +1,23 @@
 <%- include('components/header', { title: 'Hjem' }) %>
 
 <div class="jumbotron text-center mb-4">
-  <h1>Velkommen til Kukkik Ano Reinsdyrregister</h1>
-  <p>Søk etter reinsdyr, eiere, flokk eller beiteområde</p>
+  <h1 class="display-4">Velkommen til Kukkik Ano Reinsdyrregister</h1>
+  <p class="lead">Søk etter reinsdyr, eiere, flokker eller beiteområder</p>
+  
   <form id="searchForm" class="form-inline justify-content-center mb-4">
-    <input class="form-control mr-2" type="text" id="searchInput" placeholder="Søk på flokk, reinsdyr, beiteområder...">
-    <button class="btn btn-primary" type="submit">Søk</button>
+    <div class="input-group">
+      <input class="form-control" type="text" id="searchInput" placeholder="Søk på flokk, reinsdyr, beiteområder..." aria-label="Søk">
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="submit">Søk</button>
+      </div>
+    </div>
   </form>  
 </div>
+
 
 <%- include('components/flash') %>
 
 <div id="resultsContainer" class="mt-4">
-  <!-- Results will be dynamically added here -->
 </div>
 
 <script>
