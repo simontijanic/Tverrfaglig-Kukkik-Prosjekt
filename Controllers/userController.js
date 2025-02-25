@@ -4,8 +4,8 @@ const Reinsdyr = require("../Models/reinsdyrModel");
 const BeiteArea = require("../Models/beiteAreaModel");
 
 exports.getIndex = (req, res) => {
-  const messages = req.flash();
-  res.render("index", { messages });
+ // const messages = req.flash();
+  res.render("index", { messages: [] });
 };
 exports.getFAQ = (req, res) => {
   res.render("faq");
@@ -24,13 +24,13 @@ exports.getDatabaseInfo = (req, res) => {
 
 exports.getFlokk = async (req, res) => {
   try {
-    const messages = req.flash();
+   // const messages = req.flash();
     const flokkId = req.params.id;
 
     const flokk = await Flokk.findById(flokkId).populate("beiteArea").populate("owner").exec();
 
     if (!flokk) {
-      req.flash("error", "Flokk ikke funnet");
+    //  req.flash("error", "Flokk ikke funnet");
       return res.redirect("/");
     }
 
@@ -45,7 +45,7 @@ exports.getFlokk = async (req, res) => {
       flokk,
       reinsdyr,
       beiteArea: beiteAreaDetails,
-      messages,
+      messages: [],
     });
   } catch (err) {
     console.error(err);

@@ -8,31 +8,31 @@ const bcrypt = require("bcryptjs");
 const serialUtil = require("../Utils/serial");
 
 exports.getLogin = (req, res) => {
-  const messages = req.flash();
-  res.render("login", { messages });
+ // const messages = req.flash();
+  res.render("login", { messages: [] });
 };
 exports.getRegister = (req, res) => {
-  const messages = req.flash();
-  res.render("register", { messages });
+ // const messages = req.flash();
+  res.render("register", { messages: [] });
 };
 
 exports.postLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      req.flash("error", "Vennligst fyll ut alle feltene");
+     // req.flash("error", "Vennligst fyll ut alle feltene");
       return res.redirect("/login");
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      req.flash("error", "Bruker ikke funnet");
+     // req.flash("error", "Bruker ikke funnet");
       return res.redirect("/login");
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      req.flash("error", "Passord eller epost er feil");
+     // req.flash("error", "Passord eller epost er feil");
       return res.redirect("/login");
     }
 
@@ -43,7 +43,7 @@ exports.postLogin = async (req, res) => {
       uuid: user.uuid,
     };
 
-    req.flash("success", "Du har logget inn!");
+    //req.flash("success", "Du har logget inn!");
     return res.redirect("/");
   } catch (err) {
     console.error(err);
@@ -54,13 +54,13 @@ exports.postRegister = async (req, res) => {
   try {
     const { name, email, password, contactLanguage, phone } = req.body;
     if (!name || !email || !password || !contactLanguage || !phone) {
-      req.flash("error", "Vennligst fyll ut alle feltene");
+    //  req.flash("error", "Vennligst fyll ut alle feltene");
       return res.redirect("/register");
     }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      req.flash("error", "Brukeren finnes allerede");
+    //  req.flash("error", "Brukeren finnes allerede");
       return res.redirect("/register");
     }
 
@@ -79,7 +79,7 @@ exports.postRegister = async (req, res) => {
 
     await newUser.save();
 
-    req.flash("success", "Du har registret deg inn! Vennligst logg inn.");
+   // req.flash("success", "Du har registret deg inn! Vennligst logg inn.");
 
     return res.redirect("/login");
   } catch (err) {
@@ -92,7 +92,7 @@ exports.postLogout = (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       console.error("Logout error:", err);
-      req.flash("error", "Feil under utlogging. Vennligst prøv igjen.");
+     // req.flash("error", "Feil under utlogging. Vennligst prøv igjen.");
       return res.redirect("/");
     }
 
@@ -105,12 +105,12 @@ exports.getReinsdyrRegister = async (req, res) => {
   try {
     const userId = req.session.user.id;
     const flokker = await Flokk.find({ owner: userId });
-    const messages = req.flash();
+  //  const messages = req.flash();
 
     res.render("reindeer-registration", {
       title: "Registrer Reinsdyr",
       flokker,
-      messages,
+      messages: [],
     });
   } catch (error) {
     console.error(error);
@@ -122,14 +122,14 @@ exports.postReinsdyrRegister = async (req, res) => {
     const { name, flokk, birthDate } = req.body;
 
     if (!name || !flokk || !birthDate) {
-      req.flash("error", "Fyll inn alle feltene");
+    //  req.flash("error", "Fyll inn alle feltene");
       return res.redirect("reindeer-registration");
     }
     const currentUserId = req.session.user.id;
 
     const userFlokk = await Flokk.findOne({ _id: flokk, owner: currentUserId });
     if (!userFlokk) {
-      req.flash("error", "Fant ikke flokk");
+    //  req.flash("error", "Fant ikke flokk");
       return res.redirect("reindeer-registration");
     }
 
@@ -150,7 +150,7 @@ exports.postReinsdyrRegister = async (req, res) => {
 
     await newReindeer.save();
 
-    req.flash("success", "Du registrert et reinsdyr!");
+   // req.flash("success", "Du registrert et reinsdyr!");
 
     return res.redirect("/");
   } catch (error) {
@@ -166,35 +166,34 @@ exports.postDeleteReinsdyr = async (req, res) => {
     const reindeer = await Reinsdyr.findById(reindeerId).populate("flokk");
 
     if (!reindeer) {
-      req.flash("error", "Reinsdyret ble ikke funnet.");
+     // req.flash("error", "Reinsdyret ble ikke funnet.");
       return res.redirect("/reindeer-registration");
     }
 
     if (String(reindeer.flokk.owner) !== String(userId)) {
-      req.flash(
-        "error",
-        "Du har ikke tillatelse til å slette dette reinsdyret."
-      );
+      //req.flash("error", "Du har ikke tillatelse til å slette dette reinsdyret." );
       return res.redirect("/reindeer-registration");
     }
 
     await Reinsdyr.findByIdAndDelete(reindeerId);
 
-    req.flash("success", "Reinsdyret ble slettet!");
+  //  req.flash("success", "Reinsdyret ble slettet!");
     return res.redirect("/reindeer-registration");
   } catch (error) {
     console.error(error);
-    req.flash("error", "Noe gikk galt under sletting.");
+ //   req.flash("error", "Noe gikk galt under sletting.");
     return res.redirect("/reindeer-registration");
   }
 };
 
 exports.getFlokkCreation = async (req, res) => {
   try {
+   // const messages = req.flash();
     const beiteAreas = await BeiteArea.find();
 
     return res.render("create-flokk", {
       title: "Opprett Flokk",
+      messages: [],
       beiteAreas,
     });
   } catch (err) {
