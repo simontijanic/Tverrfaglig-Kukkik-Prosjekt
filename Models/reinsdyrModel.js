@@ -9,7 +9,11 @@ const reinsdyrSchema = mongoose.Schema({
       type: String, 
       enum: ["none", "pending"], 
       default: "none" 
-    }
+    },
+    pendingTransfer: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Transfer'
+    },
   },
   { timestamps: true }
 );

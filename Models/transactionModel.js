@@ -1,15 +1,29 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const transactionSchema = new mongoose.Schema({
-  reindeer: { type: mongoose.Schema.Types.ObjectId, ref: "Reindeer", required: true },
-  fromOwner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  toOwner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  // Status: pending, newOwnerConfirmed, oldOwnerFinal, completed, declined
-  status: { 
-    type: String, 
-    enum: ["pending", "newOwnerConfirmed", "oldOwnerFinal", "completed", "declined"], 
-    default: "pending" 
-  }
-}, { timestamps: true });
+const transferSchema = new mongoose.Schema({
+    reindeer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Reindeer',
+        required: true
+    },
+    currentOwner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    newOwnerEmail: {
+        type: String,
+        required: true
+    },
+    newOwner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'accepted_by_new_owner', 'rejected_by_new_owner', 'accepted_final', 'rejected_final'],
+        default: 'pending'
+    }
+});
 
-module.exports = mongoose.model("Transaction", transactionSchema);
+module.exports = mongoose.model('Transfer', transferSchema);

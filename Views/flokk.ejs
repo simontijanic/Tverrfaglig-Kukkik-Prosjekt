@@ -26,11 +26,13 @@
           <strong><%= rein.name %></strong> 
           <span class="badge badge-secondary">Serienummer: <%= rein.serialNumber %></span>
 
-          <% if (user && user.id == flokk.owner._id) { %>
-            <!-- Overføringsknapp for hvert reinsdyr -->
+          <% if (user && user.id == flokk.owner._id && rein.transferStatus !== "pending") { %>
+            <!-- Overføringsknapp for hvert reinsdyr, men bare hvis det ikke har en pending transfer -->
             <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#transferModal<%= rein._id %>">
               Overfør
             </button>
+          <% } else if (rein.transferStatus === "pending") { %>
+            <span class="badge badge-warning">Venter på overføring</span>
           <% } %>
         </li>
 
@@ -43,7 +45,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">X</button>
               </div>
               <div class="modal-body">
-                <form action="/reindeer/transfer" method="POST">
+                <form action="/transactions/initiate/<%= rein._id %>" method="POST">
                   <div class="mb-3">
                     <label for="newOwnerEmail<%= rein._id %>" class="form-label">E-postadresse til ny eier</label>
                     <input type="email" class="form-control" id="newOwnerEmail<%= rein._id %>" name="newOwnerEmail" required>
