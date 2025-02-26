@@ -12,13 +12,13 @@
     <div class="card">
       <div class="card-header" id="heading<%= area._id %>">
         <h2 class="mb-0">
-          <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse<%= area._id %>" aria-expanded="true" aria-controls="collapse<%= area._id %>">
+          <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= area._id %>" aria-expanded="false" aria-controls="collapse<%= area._id %>">
             <%= area.primaryArea %> (<%= area.counties.join(', ') %>)
           </button>
         </h2>
       </div>
 
-      <div id="collapse<%= area._id %>" class="collapse" aria-labelledby="heading<%= area._id %>" data-parent="#accordionBeiteAreas">
+      <div id="collapse<%= area._id %>" class="collapse" aria-labelledby="heading<%= area._id %>" data-bs-parent="#accordionBeiteAreas">
         <div class="card-body">
           <h5>Flokker i dette området:</h5>
           <% if (area.associatedFlocks.length > 0) { %>
@@ -34,8 +34,6 @@
           <% } else { %>
             <p>Ingen flokker assosiert med dette beiteområdet.</p>
           <% } %>
-          
-          
         </div>
       </div>
     </div>

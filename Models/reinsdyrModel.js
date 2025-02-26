@@ -5,6 +5,11 @@ const reinsdyrSchema = mongoose.Schema({
     name: { type: String, required: true },
     flokk: { type: mongoose.Schema.Types.ObjectId, ref: "Flokk", required: true },
     birthDate: { type: Date, required: true },
+    transferStatus: { 
+      type: String, 
+      enum: ["none", "pending"], 
+      default: "none" 
+    }
   },
   { timestamps: true }
 );

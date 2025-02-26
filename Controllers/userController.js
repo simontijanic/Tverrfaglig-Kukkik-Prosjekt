@@ -3,10 +3,19 @@ const Flokk = require("../Models/flokkModel");
 const Reinsdyr = require("../Models/reinsdyrModel");
 const BeiteArea = require("../Models/beiteAreaModel");
 
-exports.getIndex = (req, res) => {
- // const messages = req.flash();
-  res.render("index", { messages: [] });
+exports.getIndex = async (req, res) => {
+  try {
+    let flokker = [];
+    if (req.session.user) {
+      flokker = await Flokk.find({ owner: req.session.user.id });
+    }
+    res.render("index", { messages: [], flokker });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Serverfeil ved lasting av forside.");
+  }
 };
+
 exports.getFAQ = (req, res) => {
   res.render("faq");
 };
@@ -24,27 +33,31 @@ exports.getDatabaseInfo = (req, res) => {
 
 exports.getFlokk = async (req, res) => {
   try {
-   // const messages = req.flash();
     const flokkId = req.params.id;
+    const page = parseInt(req.query.page) || 1; // sidenummeret fea page
+    const perPage = 10;
 
     const flokk = await Flokk.findById(flokkId).populate("beiteArea").populate("owner").exec();
-
     if (!flokk) {
-    //  req.flash("error", "Flokk ikke funnet");
       return res.redirect("/");
     }
 
-    const reinsdyr = await Reinsdyr.find({ flokk: flokkId }).exec();
+    const totalReinsdyr = await Reinsdyr.countDocuments({ flokk: flokkId });
 
-    const beiteAreaDetails = flokk.beiteArea
-      ? await BeiteArea.findById(flokk.beiteArea).exec()
-      : null;
+    const reinsdyr = await Reinsdyr.find({ flokk: flokkId })
+      .skip((page - 1) * perPage) // jjj over reinsdyr fra tidligere sider
+      .limit(perPage) 
+      .exec();
+
+    const beiteAreaDetails = flokk.beiteArea ? await BeiteArea.findById(flokk.beiteArea).exec() : null;
 
     res.render("flokk", {
       title: `Flokk: ${flokk.flokkName}`,
       flokk,
       reinsdyr,
       beiteArea: beiteAreaDetails,
+      currentPage: page,
+      totalPages: Math.ceil(totalReinsdyr / perPage),
       messages: [],
     });
   } catch (err) {
@@ -52,6 +65,7 @@ exports.getFlokk = async (req, res) => {
     res.status(500).send("Serverfeil ved lasting av flokk");
   }
 };
+
 
 exports.getSearch = async (req, res) => {
   try {
@@ -96,5 +110,3 @@ exports.getSearch = async (req, res) => {
     res.status(500).json({ message: "Feil ved søk." });
   }
 };
-
-

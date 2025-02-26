@@ -14,8 +14,21 @@
   </form>  
 </div>
 
-
 <%- include('components/flash') %>
+
+<% if (flokker && flokker.length > 0) { %>
+  <div class="container mb-4">
+    <h4>Mine Flokker</h4>
+    <ul class="list-group">
+      <% flokker.forEach(function(flokk) { %>
+        <li class="list-group-item">
+          <a href="/flokk/<%= flokk._id %>"><%= flokk.flokkName %> - <%= flokk.buemerkeName %></a>
+        </li>
+      <% }) %>
+    </ul>
+  </div>
+<% } %>
+
 
 <div id="resultsContainer" class="mt-4">
 </div>
@@ -61,7 +74,7 @@
         data.results.reindeer.forEach(reindeer => {
           resultsContainer.innerHTML += `
           <li>
-            ${reindeer.name} - <a href="/flokk/${reindeer.flokk._id}">${reindeer.serialNumber}</a>
+            ${reindeer.name} - ${reindeer.serialNumber}
           </li>`;
         });
         resultsContainer.innerHTML += '</ul>';

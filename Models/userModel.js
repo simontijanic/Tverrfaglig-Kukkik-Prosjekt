@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema({
     phone: { 
       type: String, 
       required: true, 
-      validate: [/^(\+47)[\s]?\d{8}$/, 'Ugyldig telefonnummer.']
+      validate: [/^(\+47\s?)?\d{8}$/, 'Ugyldig telefonnummer. Må være 8 sifre, med eller uten +47.']
     }  
 }, { timestamps: true })
 
