@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 const userController = require("../Controllers/userController");
 const registrationController = require("../Controllers/registrationController");
+const transactionController = require("../Controllers/transactionController");
 
 const authUser = require("../Middleware/authUser");
 
@@ -29,6 +30,9 @@ router.post("/flokk/create", authUser.isAuthenticated, registrationController.po
 router.get("/search", userController.getSearch);
 
 router.get("/flokk/:id", userController.getFlokk);
+
+router.get("/transactions", authUser.isAuthenticated, transactionController.getTransaksjoner);
+
 
 module.exports = router;
     

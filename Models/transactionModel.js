@@ -1,29 +1,51 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const transferSchema = new mongoose.Schema({
-    reindeer: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Reindeer',
-        required: true
+const transaksjonSchema = new Schema(
+    {
+        reinsdyrId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Reindeer",
+            required: true,
+        },
+        fraEierId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        fraFlokkId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Flokk",
+            required: true,
+        },
+        tilEierId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
+        tilFlokkId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Flokk",
+            default: null,
+        },
+        status: {
+            type: String,
+            enum: ["Venter", "GodkjentAvMottaker", "AvslåttAvMottaker", "GodkjentAvAvsender", "AvslåttAvAvsender", "Fullført", "Avbrutt"],
+            default: "Venter",
+        },
+        meldingFraAvsender: {
+            type: String,
+            default: "",
+        },
+        meldingFraMottaker: {
+            type: String,
+            default: "",
+        }
     },
-    currentOwner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
-    newOwnerEmail: {
-        type: String,
-        required: true
-    },
-    newOwner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
-    status: {
-        type: String,
-        enum: ['pending', 'accepted_by_new_owner', 'rejected_by_new_owner', 'accepted_final', 'rejected_final'],
-        default: 'pending'
+    {
+        timestamps: true,
     }
-});
+);
 
-module.exports = mongoose.model('Transfer', transferSchema);
+const Transaksjon = mongoose.model("Transaksjon", transaksjonSchema);
+module.exports = Transaksjon;

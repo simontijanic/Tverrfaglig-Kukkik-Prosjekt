@@ -1,0 +1,44 @@
+<main>
+    <div class="transactions-container">
+        <div class="transactions-header">
+            <h2>Mine Transaksjoner</h2>
+            <div class="transaction-filters">
+                <select id="type-filter">
+                    <option value="all">Alle transaksjoner</option>
+                    <option value="sent">Sendte forespørsler</option>
+                    <option value="received">Mottatte forespørsler</option>
+                </select>
+                <select id="status-filter">
+                    <option value="">Alle statuser</option>
+                    <option value="Venter">Venter</option>
+                    <option value="GodkjentAvMottaker">Godkjent av mottaker</option>
+                    <option value="Fullført">Fullført</option>
+                    <option value="AvslåttAvMottaker,AvslåttAvAvsender">Avslått</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="transaction-sections">
+            <div class="transaction-section pending-section">
+                <h3>Aktive Transaksjoner</h3>
+                <div id="pending-transactions" class="transaction-list">
+                    <!-- Pending transactions will be dynamically populated here -->
+                </div>
+            </div>
+
+            <div class="transaction-section completed-section">
+                <h3>Fullførte Transaksjoner</h3>
+                <div id="completed-transactions" class="transaction-list">
+                    <!-- Completed transactions will be dynamically populated here -->
+                </div>
+            </div>
+
+            <div class="transaction-section declined-section">
+                <h3>Avslåtte Transaksjoner</h3>
+                <div id="declined-transactions" class="transaction-list">
+                    <!-- Declined transactions will be dynamically populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
