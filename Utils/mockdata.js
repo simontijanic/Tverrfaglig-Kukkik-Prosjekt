@@ -17,7 +17,7 @@ function generateRandomDate(pastYears = 5) {
   return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 }
 
-// Beiteområder med tilhørende fylker
+// Define grazing areas with their associated counties
 const grazingAreas = [
   { primaryArea: "Sør", counties: ["Trøndelag", "Innlandet"] },
   { primaryArea: "Ume", counties: ["Nordland"] },
@@ -32,26 +32,30 @@ const grazingAreas = [
 ];
 
 async function createUsers() {
-  const hashedPassword1 = await bcrypt.hash("password123", 10);
-  const hashedPassword2 = await bcrypt.hash("password123", 10);
+  // Update passwords to include at least one letter, one number, and one special character.
+  const hashedPassword1 = await bcrypt.hash("Password123!", 10);
+  const hashedPassword2 = await bcrypt.hash("Password123!", 10);
 
-  const user1 = await User.create({
-    name: "John Doe",
+  // Create new User instances and bypass validation to avoid failing on the hashed password
+  const user1 = new User({
+    name: "JohnDoe",
     uuid: crypto.randomUUID(),
     email: "john.doe@example.com",
     password: hashedPassword1,
     contactLanguage: "norsk",
     phone: generateRandomPhoneNumber(),
   });
+  await user1.save({ validateBeforeSave: false });
 
-  const user2 = await User.create({
-    name: "Jane Smith",
+  const user2 = new User({
+    name: "JaneSmith",
     uuid: crypto.randomUUID(),
     email: "jane.smith@example.com",
     password: hashedPassword2,
     contactLanguage: "engelsk",
     phone: generateRandomPhoneNumber(),
   });
+  await user2.save({ validateBeforeSave: false });
 
   return [user1, user2];
 }
@@ -83,18 +87,18 @@ async function createFlocks(users) {
 
   const flokk1 = await Flokk.create({
     owner: users[0]._id,
-    flokkName: "Flokk A",
+    flokkName: "FlokkA",
     series: "A001",
-    buemerkeName: "Brand A",
+    buemerkeName: "BrandA",
     buemerkeImage: "https://example.com/brand-a.jpg",
     beiteArea: beiteAreas[0]._id, // Link BeiteArea 1 to Flokk 1
   });
 
   const flokk2 = await Flokk.create({
     owner: users[1]._id,
-    flokkName: "Flokk B",
+    flokkName: "FlokkB",
     series: "B001",
-    buemerkeName: "Brand B",
+    buemerkeName: "BrandB",
     buemerkeImage: "https://example.com/brand-b.jpg",
     beiteArea: beiteAreas[1]._id, // Link BeiteArea 2 to Flokk 2
   });
@@ -122,7 +126,7 @@ async function createReindeer(flocks) {
       const serialNumber = serialUtil.generateReindeerSerial(flocks[i].series, currentReindeerCount + j);
       const reindeer = await Reinsdyr.create({
         serialNumber: serialNumber,
-        name: `Reindeer ${crypto.randomUUID().split("-")[0]}`, // Using part of UUID for random name
+        name: `Reindeer ${crypto.randomUUID().split("-")[0]}`,
         flokk: flocks[i]._id,
         birthDate: generateRandomDate(),
         transferStatus: "none",
@@ -137,10 +141,10 @@ async function createReindeer(flocks) {
 // Run the mock data creation process
 async function createMockData() {
   try {
-    await User.deleteMany({}); // Delete all previous users
-    await Flokk.deleteMany({}); // Delete all previous flocks
-    await Reinsdyr.deleteMany({}); // Delete all previous reindeer
-    await GrazingArea.deleteMany({}); // Delete all previous grazing areas
+    await User.deleteMany({});       // Delete all previous users
+    await Flokk.deleteMany({});        // Delete all previous flocks
+    await Reinsdyr.deleteMany({});     // Delete all previous reindeer
+    await GrazingArea.deleteMany({});  // Delete all previous grazing areas
 
     // Seed BeiteAreas (Grazing Areas)
     await seedGrazingAreas();

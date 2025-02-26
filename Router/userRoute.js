@@ -33,6 +33,5 @@ router.get("/flokk/:id", userController.getFlokk);
 
 router.get("/transactions", authUser.isAuthenticated, transactionController.getTransaksjoner);
 
-
 module.exports = router;
     

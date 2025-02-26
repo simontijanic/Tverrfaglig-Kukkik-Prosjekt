@@ -5,16 +5,22 @@
 <form action="/register" method="POST">
   <div class="form-group">
     <label for="name">Navn</label>
-    <input type="text" class="form-control" id="name" name="name" placeholder="Ditt navn" required>
+    <input type="text" class="form-control" id="name" name="name" placeholder="Ditt navn" required minlength="3" maxlength="50" pattern="^[a-zA-Z0-9_]+$">
+    <small class="form-text text-muted">Skriv inn ditt fulle navn (minst 3 tegn, kun alfanumeriske tegn og understrek). Max 50 tegn.</small>
   </div>
+
   <div class="form-group">
     <label for="email">E-post</label>
     <input type="email" class="form-control" id="email" name="email" placeholder="Din e-post" required>
+    <small class="form-text text-muted">Bruk en gyldig e-postadresse (f.eks. navn@domene.no).</small>
   </div>
+
   <div class="form-group">
     <label for="password">Passord</label>
-    <input type="password" class="form-control" id="password" name="password" placeholder="Ditt passord" required>
+    <input type="password" class="form-control" id="password" name="password" placeholder="Ditt passord" required minlength="8" maxlength="128" pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$">
+    <small class="form-text text-muted">Passordet må være minst 8 tegn langt og inneholde minst ett bokstav, ett tall og ett spesialtegn (f.eks. @, $, !, %).</small>
   </div>
+
   <div class="form-group">
     <label for="contactLanguage">Kontaktspråk</label>
     <select class="form-control" id="contactLanguage" name="contactLanguage" required>
@@ -24,16 +30,17 @@
       <option value="sørsamisk">Sørsamisk</option>
       <option value="norsk">Norsk</option>
       <option value="engelsk">Engelsk</option>
-
     </select>
+    <small class="form-text text-muted">Velg hvilket språk du ønsker å bli kontaktet på.</small>
   </div>
+
   <div class="form-group">
     <label for="phone">Telefonnummer</label>
     <input type="tel" class="form-control" id="phone" name="phone" pattern="(\+47[\s-]?)?[2-9][0-9]{2}[\s-]?[0-9]{2}[\s-]?[0-9]{2}" placeholder="Ditt telefonnummer" required>
+    <small class="form-text text-muted">Må være et norsk telefonnummer (med eller uten +47, f.eks. 91234567 eller +47 912 34 567).</small>
   </div>
+
   <button type="submit" class="btn btn-success">Registrer</button>
 </form>
-
-<%- include('components/flash') %>
 
 <%- include('components/footer') %>

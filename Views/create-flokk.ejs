@@ -5,15 +5,21 @@
     <div class="form-group">
       <label for="flokkName">Flokk navn:</label>
       <input type="text" class="form-control" id="flokkName" name="flokkName" required>
+      <small class="form-text text-muted">Velg et unikt navn for flokken din.</small>
     </div>
+
     <div class="form-group">
       <label for="buemerkeName">Buemerke navn:</label>
       <input type="text" class="form-control" id="buemerkeName" name="buemerkeName" required>
+      <small class="form-text text-muted">Skriv inn navnet på buemerket for flokken.</small>
     </div>
+
     <div class="form-group">
-      <label for="buemerkeImage">Buemerke (copy image adress):</label>
+      <label for="buemerkeImage">Buemerke (kopier bildeadresse):</label>
       <input type="text" class="form-control" id="buemerkeImage" name="buemerkeImage">
+      <small class="form-text text-muted">Lim inn en direkte lenke til et bilde av buemerket.</small>
     </div>
+
     <div class="form-group">
         <label for="beiteArea">Velg Beiteområde:</label>
         <select class="form-control" id="beiteArea" name="beiteArea">
@@ -23,10 +29,10 @@
             <% }) %>
           <% } %>
         </select>
-      </div>
+        <small class="form-text text-muted">Velg hvilket beiteområde flokken tilhører.</small>
+    </div>
       
-    
     <button type="submit" class="btn btn-primary">Opprett flokk</button>
-  </form>
+</form>
 
 <%- include('components/footer') %>

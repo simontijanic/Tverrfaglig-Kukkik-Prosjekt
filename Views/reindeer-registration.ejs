@@ -2,13 +2,15 @@
 
 <h2>Registrer nytt reinsdyr</h2>
 <p>Kun tilgjengelig for autoriserte brukere. Du kan kun registrere reinsdyr du selv eier.</p>
-<a href="/flokk/create">Har du ikke oprettet en flokk?</a>
+<a href="/flokk/create">Har du ikke opprettet en flokk?</a>
 
 <form action="/reindeer-registration" method="POST">
   <div class="form-group">
     <label for="name">Navn:</label>
     <input type="text" class="form-control" id="name" name="name" required>
+    <small class="form-text text-muted">Skriv inn et unikt navn for reinsdyret.</small>
   </div>
+
   <div class="form-group">
     <label for="flokk">Velg Flokk:</label>
     <select class="form-control" id="flokk" name="flokk" required>
@@ -16,14 +18,16 @@
         <option value="<%= flokk._id %>"><%= flokk.flokkName %></option>
       <% }) %>
     </select>
+    <small class="form-text text-muted">Velg hvilken flokk reinsdyret skal registreres i. Du <strong>MÅ</strong> ha registrert en flokk før du registrerer reinsdyr.</small>
   </div>
+
   <div class="form-group">
     <label for="birthDate">Fødselsdato:</label>
     <input type="date" class="form-control" id="birthDate" name="birthDate" required>
+    <small class="form-text text-muted">Velg reinsdyrets fødselsdato. Må være en dato i fortiden.</small>
   </div>
+
   <button type="submit" class="btn btn-primary">Registrer Reinsdyr</button>
 </form>
-
-<%- include('components/flash') %>
 
 <%- include('components/footer') %>

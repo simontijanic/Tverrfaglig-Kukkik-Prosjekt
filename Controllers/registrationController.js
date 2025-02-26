@@ -4,37 +4,50 @@ const Reinsdyr = require("../Models/reinsdyrModel");
 const BeiteArea = require("../Models/beiteAreaModel");
 
 const bcrypt = require("bcryptjs");
+
 const serialUtil = require("../Utils/serial");
+const { handleError } = require("../Utils/errorHandler"); 
 
 exports.getLogin = (req, res) => {
- // const messages = req.flash();
-  res.render("login", { messages: [] });
+  res.render("login");
 };
 exports.getRegister = (req, res) => {
- // const messages = req.flash();
-  res.render("register", { messages: [] });
+  res.render("register");
 };
 
+/**
+ * Handles user login by verifying credentials and creating a session.
+ * 
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 exports.postLogin = async (req, res) => {
   try {
+    // Extract email and password from the request body
     const { email, password } = req.body;
+
+    // Check for missing email or password
     if (!email || !password) {
-     // req.flash("error", "Vennligst fyll ut alle feltene");
       return res.redirect("/login");
     }
 
+    // Find the user by email
     const user = await User.findOne({ email });
+
+    // If user is not found, redirect to login
     if (!user) {
-     // req.flash("error", "Bruker ikke funnet");
       return res.redirect("/login");
     }
 
+    // Compare the provided password with the stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
+
+    // If passwords do not match, redirect to login
     if (!isMatch) {
-     // req.flash("error", "Passord eller epost er feil");
       return res.redirect("/login");
     }
 
+    // Create a user session
     req.session.user = {
       id: user._id,
       email: user.email,
@@ -42,31 +55,42 @@ exports.postLogin = async (req, res) => {
       uuid: user.uuid,
     };
 
-    //req.flash("success", "Du har logget inn!");
+    // Redirect to the home page
     return res.redirect("/");
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Serverfeil ved innlogging.");
+    // Log the error and send a server error response
+    return handleError(res, "Serverfeil ved innlogging.");
   }
 };
+/**
+ * Handles the registration of a new user.
+ * 
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 exports.postRegister = async (req, res) => {
   try {
+    // Get the user data from the request body
     const { name, email, password, contactLanguage, phone } = req.body;
+
+    // Check for missing fields
     if (!name || !email || !password || !contactLanguage || !phone) {
-    //  req.flash("error", "Vennligst fyll ut alle feltene");
       return res.redirect("/register");
     }
 
+    // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-    //  req.flash("error", "Brukeren finnes allerede");
       return res.redirect("/register");
     }
 
+    // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Generate a UUID for the user
     const uuid = crypto.randomUUID();
 
+    // Create the new user
     const newUser = new User({
       name,
       email,
@@ -76,62 +100,82 @@ exports.postRegister = async (req, res) => {
       uuid,
     });
 
+    // Save the new user to the database
     await newUser.save();
 
-   // req.flash("success", "Du har registret deg inn! Vennligst logg inn.");
-
+    // Redirect the user to the login page
     return res.redirect("/login");
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Serverfeil ved registrering.");
+    // Handle any errors
+    return handleError(res, "Serverfeil ved registrering.");
   }
 };
 
+/**
+ * Destroys the user session and clears the cookie.
+ * 
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 exports.postLogout = (req, res) => {
+  // Destroy the user session
   req.session.destroy((err) => {
     if (err) {
       console.error("Logout error:", err);
-     // req.flash("error", "Feil under utlogging. Vennligst prøv igjen.");
+      // Redirect to home page
       return res.redirect("/");
     }
 
+    // Clear the cookie
     res.clearCookie("connect.sid");
+    // Redirect to login page
     res.redirect("/login");
   });
 };
 
+/**
+ * Renders the page for registering a new reindeer.
+ * 
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 exports.getReinsdyrRegister = async (req, res) => {
   try {
-    const userId = req.session.user.id;
-    const flokker = await Flokk.find({ owner: userId });
-  //  const messages = req.flash();
+    const userId = req.session.user.id; // Get the ID of the current user
+    const flokker = await Flokk.find({ owner: userId }); // Get all herds owned by the current user
 
     res.render("reindeer-registration", {
       title: "Registrer Reinsdyr",
-      flokker,
-      messages: [],
+      flokker, // Pass the herds to the template
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Serverfeil under lasting av registreringsskjema.");
+    return handleError(res, "Serverfeil under lasting av registreringsskjema.");
   }
 };
+/**
+ * Registers a new reindeer under the authenticated user's herd.
+ * 
+ * @param {Object} req - The HTTP request object.
+ * @param {Object} res - The HTTP response object.
+ */
 exports.postReinsdyrRegister = async (req, res) => {
   try {
     const { name, flokk, birthDate } = req.body;
 
+    // Check if all required fields are provided
     if (!name || !flokk || !birthDate) {
-    //  req.flash("error", "Fyll inn alle feltene");
       return res.redirect("reindeer-registration");
     }
+
     const currentUserId = req.session.user.id;
 
+    // Verify that the current user owns the specified herd
     const userFlokk = await Flokk.findOne({ _id: flokk, owner: currentUserId });
     if (!userFlokk) {
-    //  req.flash("error", "Fant ikke flokk");
       return res.redirect("reindeer-registration");
     }
 
+    // Count existing reindeers in the herd to generate a unique serial number
     const currentReindeerCount = await Reinsdyr.countDocuments({
       flokk: userFlokk._id,
     });
@@ -140,6 +184,7 @@ exports.postReinsdyrRegister = async (req, res) => {
       currentReindeerCount
     );
 
+    // Create a new reindeer document
     const newReindeer = new Reinsdyr({
       serialNumber,
       name,
@@ -147,76 +192,104 @@ exports.postReinsdyrRegister = async (req, res) => {
       birthDate,
     });
 
+    // Save the new reindeer to the database
     await newReindeer.save();
 
-   // req.flash("success", "Du registrert et reinsdyr!");
-
+    // Redirect to the home page upon successful registration
     return res.redirect("/");
   } catch (error) {
-    console.error(error);
-    return res.status(500).send("Serverfeil under registrering av reinsdyr.");
+    return handleError(res, "Serverfeil under registrering av reinsdyr.");
   }
 };
+/**
+ * POST /reindeer/delete/:id
+ * Deletes a reindeer if the current user is the owner of the reindeer's herd.
+ *
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ * @param {string} req.params.id - The ID of the reindeer to delete
+ * @param {Object} req.session.user - The session user object
+ * @param {string} req.session.user.id - The ID of the current user
+ */
 exports.postDeleteReinsdyr = async (req, res) => {
   try {
     const reindeerId = req.params.id;
     const userId = req.session.user.id;
 
+    // Find the reindeer by ID and populate the herd (flokk) information
     const reindeer = await Reinsdyr.findById(reindeerId).populate("flokk");
 
+    // Redirect if reindeer does not exist
     if (!reindeer) {
-     // req.flash("error", "Reinsdyret ble ikke funnet.");
       return res.redirect("/reindeer-registration");
     }
 
+    // Check if the current user is the owner of the herd
     if (String(reindeer.flokk.owner) !== String(userId)) {
-      //req.flash("error", "Du har ikke tillatelse til å slette dette reinsdyret." );
       return res.redirect("/reindeer-registration");
     }
 
+    // Delete the reindeer
     await Reinsdyr.findByIdAndDelete(reindeerId);
 
-  //  req.flash("success", "Reinsdyret ble slettet!");
     return res.redirect("/reindeer-registration");
   } catch (error) {
-    console.error(error);
- //   req.flash("error", "Noe gikk galt under sletting.");
-    return res.redirect("/reindeer-registration");
+    return handleError(res, "Feil ved sletting av reinsdyr.");
   }
 };
 
+/**
+ * GET /flokk/create
+ * Returns the page for creating a new herd.
+ *
+ * @return {Response} - The rendered page
+ */
 exports.getFlokkCreation = async (req, res) => {
   try {
-   // const messages = req.flash();
+    // Get all the grazing areas
     const beiteAreas = await BeiteArea.find();
 
+    // Render the page with the grazing areas
     return res.render("create-flokk", {
       title: "Opprett Flokk",
-      messages: [],
       beiteAreas,
     });
   } catch (err) {
-    console.log(err);
-    return res.redirect("/reindeer-registration");
+    return handleError(res, "Feil ved lasting av beiteområder.");
   }
 };
 
+/**
+ * POST /flokk/create
+ * Create a new herd
+ *
+ * @param {Object} req.body - The request body
+ * @param {string} req.body.flokkName - The name of the herd
+ * @param {string} req.body.buemerkeName - The name of the earmark
+ * @param {string} req.body.buemerkeImage - The image of the earmark
+ * @param {string} req.body.beiteArea - The grazing area of the herd
+ * @return {Response} - Redirects to the reindeer registration page
+ */
 exports.postFlokkRegister = async (req, res) => {
   try {
     const { flokkName, buemerkeName, buemerkeImage, beiteArea } = req.body;
 
     if (!flokkName || !buemerkeName || !buemerkeImage || !beiteArea) {
-     // req.flash("error", "Fyll inn alle feltene");
       return res.redirect("/flokk/create");
     }
+
+    // Get the user ID from the session
     const userId = req.session.user.id;
 
+    // Get the user from the database
     const user = await User.findById(userId);
+
+    // Check if the user exists
     if (!user) {
-    //  req.flash("error", "Fant ikke brukerdata");
       return res.redirect("/flokk/create");
     }
 
+    // Generate the herd series based on the user's UUID
     const ownerCode = user.uuid.substring(0, 4).toUpperCase();
     const currentHerdCount = await Flokk.countDocuments({ owner: userId });
     const herdSeries = serialUtil.generateHerdSeries(
@@ -224,6 +297,7 @@ exports.postFlokkRegister = async (req, res) => {
       currentHerdCount
     );
 
+    // Create a new herd
     const newFlokk = new Flokk({
       owner: userId,
       flokkName,
@@ -233,18 +307,20 @@ exports.postFlokkRegister = async (req, res) => {
       beiteArea,
     });
 
+    // Save the herd to the database
     await newFlokk.save();
 
+    // Add the herd to the grazing area
     if (beiteArea) {
       await BeiteArea.findByIdAndUpdate(beiteArea, {
         $push: { associatedFlocks: newFlokk._id },
       });
     }
 
-    //req.flash("success", "Du har registrert en ny flokk!");
+    // Redirect to the reindeer registration page
     return res.redirect("/reindeer-registration");
   } catch (error) {
     console.error(error);
-    return res.status(500).send("Feil ved opprettelse av flokk.");
+    return handleError(res, "Feil ved opprettelse av flokk.");
   }
 };

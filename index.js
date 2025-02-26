@@ -2,7 +2,6 @@ require("dotenv").config();
 
 const express = require("express");
 const session = require("express-session");
-const flash = require("connect-flash");
 
 const authUser = require("./Middleware/authUser");
 const userRoute = require("./Router/userRoute");
@@ -15,8 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 app.set("view engine", "ejs");
 app.set("views", "./Views");
 
-//app.use(flash());
-
+// resave and saveUninitialized are set to false to avoid unnecessary writes to the session store
 app.use(
   session({
     secret: process.env.SECRET,

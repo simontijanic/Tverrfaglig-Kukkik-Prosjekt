@@ -1,6 +1,6 @@
 exports.generateOwnerCode = (userUuid) => {
-    return userUuid.substring(0, 4).toUpperCase();
-}
+  return userUuid.substring(0, 4).toUpperCase();
+};
 
 /**
  * Genererer en flokkserie for en ny flokk basert på eierens kode og antall eksisterende flokker.
@@ -9,9 +9,9 @@ exports.generateOwnerCode = (userUuid) => {
  * @returns {string} - Eksempel: "A1B2-03" for den tredje flokken.
  */
 exports.generateHerdSeries = (ownerCode, currentHerdCount) => {
-    const herdNumber = (currentHerdCount + 1).toString().padStart(2, '0');
-    return `${ownerCode}-${herdNumber}`;  
-}
+  const herdNumber = (currentHerdCount + 1).toString().padStart(2, "0");
+  return `${ownerCode}-${herdNumber}`;
+};
 
 /**
  * Genererer et individuelt reinsdyrs serienummer basert på flokkserien og antall reinsdyr i flokken.
@@ -20,6 +20,6 @@ exports.generateHerdSeries = (ownerCode, currentHerdCount) => {
  * @returns {string} - Eksempel: "A1B2-03-0001" for det første reinsdyret.
  */
 exports.generateReindeerSerial = (herdSeries, currentReindeerCount) => {
-    const reindeerNumber = (currentReindeerCount + 1).toString().padStart(4, '0');
-    return `${herdSeries}-${reindeerNumber}`;  
-}
+  const reindeerNumber = (currentReindeerCount + 1).toString().padStart(4, "0");
+  return `${herdSeries}-${reindeerNumber}`;
+};

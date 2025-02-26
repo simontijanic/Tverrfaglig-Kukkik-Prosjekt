@@ -14,8 +14,6 @@
   </form>  
 </div>
 
-<%- include('components/flash') %>
-
 <% if (flokker && flokker.length > 0) { %>
   <div class="container mb-4">
     <h4>Mine Flokker</h4>
@@ -35,68 +33,74 @@
 
 <script>
   document.getElementById('searchForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const searchQuery = document.getElementById('searchInput').value;
+  e.preventDefault(); // Prevent default form submission
 
-    if (!searchQuery) {
-      return;
+  const searchQuery = document.getElementById('searchInput').value;
+
+  if (!searchQuery) {
+    return; // Exit if search query is empty
+  }
+
+  try {
+    const response = await fetch(`/search?q=${encodeURIComponent(searchQuery)}`);
+    const data = await response.json();
+
+    if (data.message) {
+      document.getElementById('resultsContainer').innerHTML = `<p>${data.message}</p>`;
+      return; // Display message if available and exit
     }
 
-    try {
-      const response = await fetch(`/search?q=${encodeURIComponent(searchQuery)}`);
-      const data = await response.json();
+    const resultsContainer = document.getElementById('resultsContainer');
+    resultsContainer.innerHTML = ''; // Clear previous results
 
-      if (data.message) {
-        document.getElementById('resultsContainer').innerHTML = `<p>${data.message}</p>`;
-        return;
-      }
-
-      const resultsContainer = document.getElementById('resultsContainer');
-      resultsContainer.innerHTML = '';
-
-      if (data.results.flokk.length > 0) {
-        resultsContainer.innerHTML += '<h4 class="mt-4">Flokker:</h4>';
-        resultsContainer.innerHTML += '<ul class="mb-4">'; 
-        data.results.flokk.forEach(flokk => {
-          resultsContainer.innerHTML += `
-            <li>
-              <a href="/flokk/${flokk._id}">${flokk.flokkName} - ${flokk.buemerkeName}</a>
-            </li>
-          `;
-        });
-        resultsContainer.innerHTML += '</ul>';
-      }
-
-      if (data.results.reindeer.length > 0) {
-        resultsContainer.innerHTML += '<h4 class="mt-4">Reinsdyr:</h4>'; 
-        resultsContainer.innerHTML += '<ul class="mb-4">';
-        data.results.reindeer.forEach(reindeer => {
-          resultsContainer.innerHTML += `
+    // Display flocks if any
+    if (data.results.flokk.length > 0) {
+      resultsContainer.innerHTML += '<h4 class="mt-4">Flokker:</h4>';
+      resultsContainer.innerHTML += '<ul class="mb-4">';
+      data.results.flokk.forEach(flokk => {
+        resultsContainer.innerHTML += `
           <li>
-            ${reindeer.name} - ${reindeer.serialNumber}
-          </li>`;
-        });
-        resultsContainer.innerHTML += '</ul>';
-      }
-
-      if (data.results.beiteArea.length > 0) {
-        resultsContainer.innerHTML += '<h4 class="mt-4">Beiteområder:</h4>';
-        resultsContainer.innerHTML += '<ul class="mb-4">';
-        data.results.beiteArea.forEach(area => {
-          resultsContainer.innerHTML += `<li>${area.primaryArea} - ${area.counties.join(', ')}</li>`;
-        });
-        resultsContainer.innerHTML += '</ul>';
-      }
-
-      if (!data.results.flokk.length && !data.results.reindeer.length && !data.results.beiteArea.length) {
-        resultsContainer.innerHTML = '<p>Ingen resultater funnet.</p>';
-      }
-
-    } catch (error) {
-      console.error(error);
+            <a href="/flokk/${flokk._id}">${flokk.flokkName} - ${flokk.buemerkeName}</a>
+          </li>
+        `;
+      });
+      resultsContainer.innerHTML += '</ul>';
     }
-  });
+
+    // Display reindeer if any
+    if (data.results.reindeer.length > 0) {
+      resultsContainer.innerHTML += '<h4 class="mt-4">Reinsdyr:</h4>';
+      resultsContainer.innerHTML += '<ul class="mb-4">';
+      data.results.reindeer.forEach(reindeer => {
+        resultsContainer.innerHTML += `
+          <li>
+            <a href="/flokk/${reindeer.flokk._id}">${reindeer.name} - ${reindeer.serialNumber}</a>
+          </li>
+        `;
+      });
+      resultsContainer.innerHTML += '</ul>';
+    }
+
+    // Display grazing areas if any
+    if (data.results.beiteArea.length > 0) {
+      resultsContainer.innerHTML += '<h4 class="mt-4">Beiteområder:</h4>';
+      resultsContainer.innerHTML += '<ul class="mb-4">';
+      data.results.beiteArea.forEach(area => {
+        resultsContainer.innerHTML += `<li>${area.primaryArea} - ${area.counties.join(', ')}</li>`;
+      });
+      resultsContainer.innerHTML += '</ul>';
+    }
+
+    // If no results found
+    if (!data.results.flokk.length && !data.results.reindeer.length && !data.results.beiteArea.length) {
+      resultsContainer.innerHTML = '<p>Ingen resultater funnet.</p>';
+    }
+
+  } catch (error) {
+    console.error(error); // Log any errors to the console
+  }
+});
+
 </script>
 
 <%- include('components/footer') %>

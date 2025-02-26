@@ -12,7 +12,9 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="/"><strong>Kuk</strong>kik Ano</a>
+    <a class="navbar-brand" href="/">Kukkik Ano <% if (user) { %>
+      - <%= user.name %>
+    <% } %></a>
   
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -29,7 +31,7 @@
           <li class="nav-item mx-3"><a class="btn btn-outline-primary" href="/login">Logg inn</a></li>
         <% } else { %>
           <li class="nav-item mx-3"><a class="btn btn-outline-primary" href="/reindeer-registration">Registrer reinsdyr</a></li>
-          <li class="nav-item mx-3"><a class="btn btn-outline-primary" href="/transactions">Mine transaksjoner</a></li> <!-- Legg til lenken her -->
+          <li class="nav-item mx-3"><a class="btn btn-outline-primary" href="/transactions">Mine transaksjoner</a></li>
           <li class="nav-item mx-3">
             <form action="/logout" method="POST" style="display: inline;">
               <button class="btn btn-outline-danger" type="submit">Logg ut</button>
