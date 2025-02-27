@@ -162,6 +162,8 @@ flowchart LR
 |-----------|--------|-------------|--------------|----------|
 | `/search` | GET | Søk blant eiere, flokker og reinsdyr | `q` (søkespørring) | `{ success: boolean, message: string, results: object, totalCount: number }` |
 
+
+
 ---
 
 ## Router-konfigurasjon
@@ -229,9 +231,9 @@ npm install
 Create a `.env` file in the server directory with the following variables:
 
 ```
-PORT=4000
-SECRET="4237fdshb2j412j"
-MONGOURL="mongodb://localhost:27017/KukkikAnoReinsdyrRegisterDB"
+PORT=SECRET
+SECRET=SECRET
+MONGOURL=SECRET
 ```
 
 4. **Initialize the database with mock data (optional)**
