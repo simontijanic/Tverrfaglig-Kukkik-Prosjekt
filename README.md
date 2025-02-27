@@ -303,10 +303,8 @@ sudo ufw status verbose
 sudo apt update && sudo apt upgrade -y
 
 sudo apt install git
-sudo mkdir -p /var/www/
-cd /var/www/
+cd (hjemme mappen din)
 git clone https://github.com/dittbrukernavn/ditt-repo.git .
-sudo chown -R dev:dev /var/www/ditt-repo
 ```
 
 #### Node.js og PM2:
