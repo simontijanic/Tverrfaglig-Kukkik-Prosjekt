@@ -6,6 +6,7 @@ const session = require("express-session");
 const authUser = require("./Middleware/authUser");
 const userRoute = require("./Router/userRoute");
 const databaseController = require("./Controllers/databaseController");
+const flash = require("express-flash");
 
 const app = express();
 
@@ -13,6 +14,8 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.set("view engine", "ejs");
 app.set("views", "./Views");
+
+app.use(flash());
 
 // resave and saveUninitialized are set to false to avoid unnecessary writes to the session store
 app.use(

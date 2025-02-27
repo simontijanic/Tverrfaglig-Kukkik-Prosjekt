@@ -9,10 +9,10 @@ const serialUtil = require("../Utils/serial");
 const { handleError } = require("../Utils/errorHandler"); 
 
 exports.getLogin = (req, res) => {
-  res.render("login");
+  res.render("login", {messages: req.flash()});
 };
 exports.getRegister = (req, res) => {
-  res.render("register");
+  res.render("register"), {messages: req.flash()};
 };
 
 /**
@@ -28,6 +28,7 @@ exports.postLogin = async (req, res) => {
 
     // Check for missing email or password
     if (!email || !password) {
+      req.flash("error", "Du mangler å fylle ut alle feltene")
       return res.redirect("/login");
     }
 
@@ -36,6 +37,7 @@ exports.postLogin = async (req, res) => {
 
     // If user is not found, redirect to login
     if (!user) {
+      req.flash("error", "Bruker ble ikke funnet!")
       return res.redirect("/login");
     }
 
@@ -44,6 +46,7 @@ exports.postLogin = async (req, res) => {
 
     // If passwords do not match, redirect to login
     if (!isMatch) {
+      req.flash("error", "Epost eller passord er feil!")
       return res.redirect("/login");
     }
 
@@ -75,12 +78,14 @@ exports.postRegister = async (req, res) => {
 
     // Check for missing fields
     if (!name || !email || !password || !contactLanguage || !phone) {
+      req.flash("error", "Du mangler å fylle ut alle feltene")
       return res.redirect("/register");
     }
 
     // Check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      req.flash("error", "Bruker sin epost finnes allerede")
       return res.redirect("/register");
     }
 
@@ -107,7 +112,7 @@ exports.postRegister = async (req, res) => {
     return res.redirect("/login");
   } catch (err) {
     // Handle any errors
-    return handleError(res, "Serverfeil ved registrering.");
+    return handleError(res, err);
   }
 };
 
@@ -147,6 +152,7 @@ exports.getReinsdyrRegister = async (req, res) => {
     res.render("reindeer-registration", {
       title: "Registrer Reinsdyr",
       flokker, // Pass the herds to the template
+      messages: req.flash(),
     });
   } catch (error) {
     return handleError(res, "Serverfeil under lasting av registreringsskjema.");
@@ -164,6 +170,7 @@ exports.postReinsdyrRegister = async (req, res) => {
 
     // Check if all required fields are provided
     if (!name || !flokk || !birthDate) {
+      req.flash("error", "Du mangler å fylle ut alle feltene")
       return res.redirect("reindeer-registration");
     }
 
@@ -172,6 +179,7 @@ exports.postReinsdyrRegister = async (req, res) => {
     // Verify that the current user owns the specified herd
     const userFlokk = await Flokk.findOne({ _id: flokk, owner: currentUserId });
     if (!userFlokk) {
+      req.flash("error", "Du har ikke tilgang til denne herden")
       return res.redirect("reindeer-registration");
     }
 
@@ -253,6 +261,7 @@ exports.getFlokkCreation = async (req, res) => {
     return res.render("create-flokk", {
       title: "Opprett Flokk",
       beiteAreas,
+      messages: req.flash(),
     });
   } catch (err) {
     return handleError(res, "Feil ved lasting av beiteområder.");
@@ -275,6 +284,7 @@ exports.postFlokkRegister = async (req, res) => {
     const { flokkName, buemerkeName, buemerkeImage, beiteArea } = req.body;
 
     if (!flokkName || !buemerkeName || !buemerkeImage || !beiteArea) {
+      req.flash("error", "Du mangler å fylle ut alle feltene");
       return res.redirect("/flokk/create");
     }
 
@@ -286,6 +296,7 @@ exports.postFlokkRegister = async (req, res) => {
 
     // Check if the user exists
     if (!user) {
+      req.flash("error", "Bruker finnes ikke");
       return res.redirect("/flokk/create");
     }
 
