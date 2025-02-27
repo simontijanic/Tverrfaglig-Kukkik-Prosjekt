@@ -162,6 +162,8 @@ flowchart LR
 |-----------|--------|-------------|--------------|----------|
 | `/search` | GET | Søk blant eiere, flokker og reinsdyr | `q` (søkespørring) | `{ success: boolean, message: string, results: object, totalCount: number }` |
 
+
+
 ---
 
 ## Router-konfigurasjon
@@ -229,9 +231,9 @@ npm install
 Create a `.env` file in the server directory with the following variables:
 
 ```
-PORT=4000
-SECRET="4237fdshb2j412j"
-MONGOURL="mongodb://localhost:27017/KukkikAnoReinsdyrRegisterDB"
+PORT=SECRET
+SECRET=SECRET
+MONGOURL=SECRET
 ```
 
 4. **Initialize the database with mock data (optional)**
@@ -259,6 +261,8 @@ Her er den oppdaterte versjonen av databaseoppsettet basert på din implementasj
 
 ### Database Schema  
 
+Applikasjonen bruker MongoDB med følgende hovedsamlinger:  
+
 1. **User** (Bruker)  
    - Informasjon om registrerte brukere  
    - UUID, kontaktopplysninger og foretrukket språk  
@@ -281,3 +285,41 @@ Her er den oppdaterte versjonen av databaseoppsettet basert på din implementasj
    - Flermanns-godkjenningsprosess med statussporing  
 
 ---
+
+### Tips for serveroppsett
+
+#### MongoDB:
+```bash
+sudo ufw enable
+sudo ufw allow from 10.12.14.179 to any port 27017
+sudo ufw allow 22/tcp
+sudo ufw default allow outgoing
+sudo ufw default deny incoming
+sudo ufw status verbose
+```
+
+#### NGINX:
+```bash
+sudo apt update && sudo apt upgrade -y
+
+sudo apt install git
+cd (hjemme mappen din)
+git clone https://github.com/dittbrukernavn/ditt-repo.git .
+```
+
+#### Node.js og PM2:
+```bash
+curl -fsSL https://fnm.vercel.app/install | bash
+source /home/dev/.bashrc
+fnm --version
+fnm install --lts
+fnm use --lts
+fnm default $(fnm current)
+
+node -v
+npm -v
+
+npm install -g pm2
+pm2 --version
+```
+
