@@ -2,11 +2,15 @@ require("dotenv").config();
 
 const express = require("express");
 const session = require("express-session");
+const flash = require("express-flash");
 
 const authUser = require("./Middleware/authUser");
+
 const userRoute = require("./Router/userRoute");
+const registrationRoute = require("./Router/registrationRoute");
+const reindeerRoute = require("./Router/reindeerRoute");
+
 const databaseController = require("./Controllers/databaseController");
-const flash = require("express-flash");
 
 const app = express();
 
@@ -27,7 +31,10 @@ app.use(
 );
 
 app.use(authUser.setUserAuth);
+
 app.use(userRoute);
+app.use(registrationRoute);
+app.use(reindeerRoute);
 
 databaseController()
   .then(() => {
